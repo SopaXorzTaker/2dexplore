@@ -209,7 +209,7 @@ def main_loop():
                     wrl.player.current_block = (wrl.player.current_block + 1) % len(block.BLOCK_INVENTORY)
                     # ESC KEY - RESET
                 elif event.key == K_ESCAPE:
-                    xboundmax, xboundmin, yboundmax, yboundmin = 0, 0, -10, 0
+                    xboundmax, xboundmin, yboundmax, yboundmin = 0, 0, 0, 0
                     wrl.new_world(MAP_X, MAP_Y)
                     # F1 KEY - GODMODE
                 elif event.key == K_F1:
