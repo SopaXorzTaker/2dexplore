@@ -231,8 +231,8 @@ def main_loop():
                     screenshot()
 
         map_display.fill(Color(154, 198, 255, 0))
-        for x in range(MAP_X):
-            for y in range(MAP_Y):
+        for x in xrange(MAP_X):
+            for y in xrange(MAP_Y):
                 map_display.blit(block.BLOCK_TEXTURES[wrl.level[x][y]], (x * 32, y * 32))
 
         debug_text = "Coords: %d, %d   %d fps, block: " % (
