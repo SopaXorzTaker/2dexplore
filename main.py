@@ -209,7 +209,7 @@ def main_loop():
                     wrl.player.current_block = (wrl.player.current_block + 1) % len(block.BLOCK_INVENTORY)
                     # ESC KEY - RESET
                 elif event.key == K_ESCAPE:
-                    xboundmax, xboundmin, yboundmax, yboundmin = 0, 0, -10, 0
+                    xboundmax, xboundmin, yboundmax, yboundmin = 0, 0, 0, 0
                     wrl.new_world(MAP_X, MAP_Y)
                     # F1 KEY - GODMODE
                 elif event.key == K_F1:
@@ -231,9 +231,11 @@ def main_loop():
                     screenshot()
 
         map_display.fill(Color(154, 198, 255, 0))
-        for x in xrange(MAP_X):
-            for y in xrange(MAP_Y):
-                map_display.blit(block.BLOCK_TEXTURES[wrl.level[x][y]], (x * 32, y * 32))
+        py, px = wrl.player.coords
+        for x in xrange(px - 26, px + 26):
+            for y in xrange(py - 20, py + 20):
+                if x in xrange(MAP_X) and y in xrange(MAP_Y):
+                    map_display.blit(block.BLOCK_TEXTURES[wrl.level[x][y]], (x * 32, y * 32))
 
         debug_text = "Coords: %d, %d   %d fps, block: " % (
             wrl.player.coords[0], wrl.player.coords[1], clk.get_fps()) + "**%d, %d**" % (xboundmax, yboundmax)
