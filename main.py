@@ -18,7 +18,7 @@ SAVE_FILE = "explore_save.gz"
 TILESIZE = 32
 MAP_X = 48
 MAP_Y = 48
-screen = pygame.display.set_mode((800, 800))
+screen = None
 COLORS = {
     'black': (0, 0, 0),
     'white': (255, 255, 255),
