@@ -99,14 +99,9 @@ def main_loop():
     if wrl.player.coords[1] < 8:
         yboundmax = (wrl.player.coords[0])
     else:
-<<<<<<< HEAD
-        yboundmax=((wrl.player.coords[0]-(wrl.player.coords[0]*2))+8)
-    yboundmin=0
-    player_health=20
-=======
         yboundmax = ((wrl.player.coords[0] - (wrl.player.coords[0] * 2)) + 8)
     yboundmin = 0
->>>>>>> 2c38872fade8afcd9e118695d84ccac98ab46604
+
     while True:
         has_displayed = 0
         if wrl.player.coords[1] < 12:
