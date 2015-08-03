@@ -13,7 +13,7 @@ import block
 just_started = True
 
 block.load_textures()  # ...
-player_health=20.0
+player_health = 20.0
 SAVE_FILE = "explore_save.gz"
 TILESIZE = 32
 MAP_X = 48
@@ -85,7 +85,7 @@ def game_over():
 
 def main_loop():
     global display, start_time, fall_delay, map_display, block_above, block_under, block_index, wrl, xs, ys, \
-        just_started
+        just_started, player_health
     ys = 0
     xs = 0
     font = pygame.font.SysFont("UbuntuMono", 13)  # Fonts should be inited after pygame.init()
@@ -250,7 +250,7 @@ def main_loop():
             if player_health <= 0:
                 game_over()
         if player_health <= 20.0:
-            player_health=player_health+0.05
+            player_health += 0.05
         for ent in wrl.entities:
             ent.render(map_display, TILESIZE, TILESIZE)
         pygame.display.update()
