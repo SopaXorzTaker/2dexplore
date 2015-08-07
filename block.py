@@ -31,6 +31,13 @@ BLOCK_NAMES = {
     BLOCK_LOG: 'Log', BLOCK_BEDROCK: 'Bedrock', BLOCK_GOLD: 'Gold Ore', BLOCK_IRON: 'Iron Ore',
     BLOCK_COAL: 'Coal Ore'
 }
+BLOCK_NAMES_VERBOSE = {
+    BLOCK_AIR: 'air', BLOCK_STONE: 'stone', BLOCK_DIRT: 'dirt', BLOCK_GRASS: 'grass',
+    BLOCK_DIAMOND: 'diamond_ore', BLOCK_LAVA: 'lava', BLOCK_WATER: 'water',
+    BLOCK_LAVA_FLOWING: 'lava', BLOCK_WATER_FLOWING: 'water', BLOCK_LEAVES: 'leaves',
+    BLOCK_LOG: 'log', BLOCK_BEDROCK: 'bedrock', BLOCK_GOLD: 'gold_ore', BLOCK_IRON: 'iron_ore',
+    BLOCK_COAL: 'coal'
+}
 
 BLOCK_TEXTURES = None
 BLOCK_NONSOLID = [BLOCK_AIR, BLOCK_LAVA, BLOCK_WATER, BLOCK_WATER_FLOWING, BLOCK_LAVA_FLOWING]

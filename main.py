@@ -9,8 +9,11 @@ import os
 from pygame.locals import *
 import world
 import block
-
+import random
+import time
+from PIL import Image
 just_started = True
+class CloseInventory(Exception): pass
 
 block.load_textures()  # ...
 player_health = 20.0
@@ -82,12 +85,12 @@ def game_over():
                     if evt.type == KEYDOWN:
                         wrl.new_world(MAP_X, MAP_Y)
 
-
 def main_loop():
     global display, start_time, fall_delay, map_display, block_above, block_under, block_index, wrl, xs, ys, \
         just_started, player_health
     ys = 0
     xs = 0
+    wantsInventory = False
     font = pygame.font.SysFont("UbuntuMono", 13)  # Fonts should be inited after pygame.init()
     start_time = 0
     clk = pygame.time.Clock()
@@ -101,8 +104,27 @@ def main_loop():
     else:
         yboundmax = ((wrl.player.coords[0] - (wrl.player.coords[0] * 2)) + 8)
     yboundmin = 0
-
+    Inventory = pygame.Surface((100, 200))
+    InvBack = pygame.Surface((100, 200))
+    InvBack.set_alpha(64)
+    InvBack.fill(0x000000)
+    InventoryBounds = pygame.Rect((700, 0), (100, 200))
+    def inv_out(out, x, y):
+        text = font.render(out, True, COLORS['white'])
+        Inventory.blit(text, (x, y))
+    textlev = 0
+    def pilgame(image_path, dimensions, type):
+        image = Image.open(image_path)
+        pygame_image = pygame.image.fromstring(image.tobytes(), dimensions, type)
+        return pygame_image
     while True:
+        for i in xrange(14):
+            if i >= 10: ii = (i - 10)*-1
+            else: ii = i
+            blockToDisplay = block.BLOCK_NAMES_VERBOSE.get(block.BLOCK_INVENTORY[ii], "unknown")
+            Inventory.blit(pilgame((("textures/inventory_thumb/%s.png") % blockToDisplay), (16, 16), "RGBA"), (2, textlev))
+            inv_out(str(wrl.player.inventory.get(i)), 30, textlev)
+            textlev += 23
         has_displayed = 0
         if wrl.player.coords[1] < 12:
             xboundmax = (wrl.player.coords[1] + 12)
@@ -225,25 +247,41 @@ def main_loop():
                 elif event.key == K_m:  # and wrl.player.god_mode:
                     ent = PlayerEntity(bounding_box=(0, 0, MAP_X, MAP_Y), name="Testificate")
                     wrl.spawn_entity(ent)
-                    ent.coords = wrl.player.coords
+                    ent.coords = (wrl.player.coords[0], wrl.player.coords[1]-1)
                     # F5 KEY - SCREENSHOT (possibly bugged)
                 elif event.key == K_F5:
                     screenshot()
-
+                    #I KEY - INVENTORY
+                elif event.key == K_i:
+                    wantsInventory = True
+                    display.blit(InvBack, InventoryBounds)
+                    display.blit(Inventory, InventoryBounds)
         map_display.fill(Color(154, 198, 255, 0))
         py, px = wrl.player.coords
         for x in xrange(px - 26, px + 26):
             for y in xrange(py - 20, py + 20):
                if x in xrange(MAP_X) and y in xrange(MAP_Y):                   	
                 map_display.blit(block.BLOCK_TEXTURES[wrl.level[x][y]], (x * 32, y * 32))
-        debug_text = "Coords: %d, %d   %d fps, block: " % (
-                wrl.player.coords[0], wrl.player.coords[1], clk.get_fps()) + "**%d, %d**" % (xboundmax, yboundmax) + " player_health: %d " % (player_health)
+                
+        debug_backing = pygame.Surface((175,53))
+        debug_backing.set_alpha(64)
+        debug_backing.fill(0x000000)
+        debug_text_row_1 = "COORDS      %d, %d  " % (wrl.player.coords[0], wrl.player.coords[1])
+        debug_text_row_2 = "FPS         %d      " % clk.get_fps()
+        debug_text_row_3 = "BOUNDS      %d, %d  " % (xboundmax, yboundmax)
+        debug_text_row_4 = "HEALTH      %d      " % (player_health)
         inventory_text = (" x %d" % wrl.player.inventory.get(wrl.player.current_block,
                                                              -1)) + " " + block.BLOCK_NAMES.get(
             block.BLOCK_INVENTORY[wrl.player.current_block], "unknown")
-        debug_label = font.render(debug_text, True, COLORS['white'], COLORS['black'])
+        def debug_out(out, x, y):
+            debug_label = font.render(out, True, COLORS['white'])
+            display.blit(debug_label, (x, y))
         inventory_label = font.render(inventory_text, True, COLORS['white'], COLORS['black'])
-        display.blit(debug_label, (0, 0))
+        display.blit(debug_backing, (0, 0))
+        debug_out(debug_text_row_1, 0, 0)
+        debug_out(debug_text_row_2, 0, 13)
+        debug_out(debug_text_row_3, 0, 26)
+        debug_out(debug_text_row_4, 0, 39)
         display.blit(block.BLOCK_TEXTURES[block.BLOCK_INVENTORY[wrl.player.current_block]], (0, 25 * TILESIZE + 5))
         display.blit(inventory_label, (32, MAP_Y * TILESIZE + 5))
         if block_under in block.BLOCK_DEADLY and not wrl.player.god_mode:
@@ -256,7 +294,7 @@ def main_loop():
             ent.render(map_display, TILESIZE, TILESIZE)
         pygame.display.update()
         display.fill(0)
-        if xboundmax <= 0 and xboundmax <= -12:
+        if xboundmax <= 0:
             fx = (xboundmax * 32)
             if xboundmax < -23:
                 fx = -736
@@ -270,6 +308,18 @@ def main_loop():
         display.fill(0x101010, (0, 600 - 48, 800, 600))
         display.blit(block.BLOCK_TEXTURES[block.BLOCK_INVENTORY[wrl.player.current_block]], (8, 600 - 40))
         display.blit(inventory_label, (40, 600 - 32))
+        def exitInventoryError():
+            print "You must press X to exit the inventory before preforming any other actions!"
+        if wantsInventory:
+            try:
+                while 1:
+                    for event in pygame.event.get():
+                        if event.type == KEYDOWN:
+                            if event.key == K_x:
+                                raise CloseInventory
+                            else: exitInventoryError()
+            except CloseInventory: pass
+            wantsInventory = False
 
 
 pygame.init()
