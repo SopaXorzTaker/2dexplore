@@ -133,9 +133,10 @@ def main_loop():
                 keys = pygame.key.get_pressed()
                 just_started = False
                 # W KEY - UP
-                if event.key == K_w and wrl.player.coords[0] in range(1, MAP_X) and (
-                            not wrl.player.falling or wrl.player.god_mode):
+                if event.key == K_w and wrl.player.coords[0] in range(1, MAP_X) and \
+                        ((not (wrl.player.jumping or wrl.player.falling)) or wrl.player.god_mode):
                     wrl.player.coords[0] -= 1
+                    wrl.player.jumping = True
                     yboundmax += 1
                     if yboundmin != 0:
                         yboundmin += 1
@@ -237,7 +238,8 @@ def main_loop():
                if x in xrange(MAP_X) and y in xrange(MAP_Y):                   	
                 map_display.blit(block.BLOCK_TEXTURES[wrl.level[x][y]], (x * 32, y * 32))
         debug_text = "Coords: %d, %d   %d fps, block: " % (
-                wrl.player.coords[0], wrl.player.coords[1], clk.get_fps()) + "**%d, %d**" % (xboundmax, yboundmax) + " player_health: %d " % (player_health)
+                wrl.player.coords[0], wrl.player.coords[1], clk.get_fps()) + "**%d, %d**" % (xboundmax, yboundmax) + " player_health: %d " % (player_health) + \
+                     "jumping, falling: %s, %s" % (wrl.player.jumping, wrl.player.falling)
         inventory_text = (" x %d" % wrl.player.inventory.get(wrl.player.current_block,
                                                              -1)) + " " + block.BLOCK_NAMES.get(
             block.BLOCK_INVENTORY[wrl.player.current_block], "unknown")

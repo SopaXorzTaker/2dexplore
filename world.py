@@ -35,6 +35,8 @@ class World(object):
             self.player.falling = False
         if self.player.falling:
             self.player.fall_delay += 1
+        if self.player.jumping and self.player.falling:
+            self.player.jumping = False
 
         checky = self.player.coords[0] + 1
         if checky <= level_y - 1 and self.level[self.player.coords[1]][checky] in block.BLOCK_NONSOLID:
@@ -42,7 +44,10 @@ class World(object):
         if self.player.fall_delay == 3:
             self.player.coords[0] += 1
             self.player.fall_delay = 0
-            self.player.falling = False
+            checky += 1
+            if not (checky <= level_y - 1 and self.level[self.player.coords[1]][checky] in block.BLOCK_NONSOLID):
+                self.player.falling = False
+            self.player.jumping = False
 
         for x2 in range(level_x):
             for y2 in range(level_y):

@@ -12,7 +12,7 @@ class PlayerEntity(GenericEntity):
     walk_dir = 0
 
     def __init__(self, texture=None, bounding_box=None, name=None):
-        self.falling, self.fall_delay, self.god_mode = False, 0, False
+        self.falling, self.fall_delay, self.jumping, self.god_mode = False, 0, False, False
         self.inventory = {}
         self.current_block = 0
         GenericEntity.__init__(self, player.tobytes() if not texture else texture,
