@@ -225,7 +225,7 @@ def main_loop():
                 elif event.key == K_m:  # and wrl.player.god_mode:
                     ent = PlayerEntity(bounding_box=(0, 0, MAP_X, MAP_Y), name="Testificate")
                     wrl.spawn_entity(ent)
-                    ent.coords = wrl.player.coords
+                    ent.coords = wrl.player.coords[:]
                     # F5 KEY - SCREENSHOT (possibly bugged)
                 elif event.key == K_F5:
                     screenshot()
