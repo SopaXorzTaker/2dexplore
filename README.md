@@ -1,6 +1,9 @@
 2dexplore
 =========
 
+***NO LONGER SUPPORTED!***
+* The JS version is recommended now: [2dexplore-js](https://github.com/SopaXorzTaker/2dexplore-js)
+
 A pygame 2d exploring game.
 
 
